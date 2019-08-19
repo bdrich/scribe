@@ -19,12 +19,12 @@ package templates
 import (
 	"bytes"
 	"fmt"
-	"html/template"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
+	"text/template"
 
 	"github.com/bdrich/scribe/pkg/fileSystem"
 
@@ -35,7 +35,7 @@ import (
 // ExecutePathTemplates reads a YAML/JSON file from the valuesIn reader, uses it as values
 // to populate the tplPath path.
 func ExecutePathTemplates(valuesIn io.Reader, tplPath string) (string, error) {
-	tpl := template.Must(template.New(tplPath).Funcs(sprig.FuncMap()).Parse(tplPath))
+	tpl := template.Must(template.New(tplPath).Funcs(sprig.TxtFuncMap()).Parse(tplPath))
 
 	buf := bytes.NewBuffer(nil)
 	_, err := io.Copy(buf, valuesIn)
@@ -68,7 +68,7 @@ func ExecutePathTemplates(valuesIn io.Reader, tplPath string) (string, error) {
 func ExecuteTemplates(valuesIn io.Reader, out io.Writer, tplFile string) error {
 	templateFileReader, _ := ioutil.ReadFile(tplFile)
 	templateText := string(templateFileReader)
-	tpl := template.Must(template.New(tplFile).Funcs(sprig.FuncMap()).Parse(templateText))
+	tpl := template.Must(template.New(tplFile).Funcs(sprig.TxtFuncMap()).Parse(templateText))
 
 	buf := bytes.NewBuffer(nil)
 	_, err := io.Copy(buf, valuesIn)
